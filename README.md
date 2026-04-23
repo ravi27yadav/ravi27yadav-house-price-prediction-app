@@ -1,20 +1,17 @@
 # 🏠 House Price Prediction App
 
-A Machine Learning web application that predicts California housing prices based on user input features.
-
-🚀 **Live App:**  
-https://ravi27yadav-house-price-prediction-app-4fmsvhdzpyqfawfsst4gkh.streamlit.app/
+🚀 **Live Demo:**  
+👉 https://ravi27yadav-house-price-prediction-app-4fmsvhdzpyqfawfsst4gkh.streamlit.app/
 
 ---
 
-## 📌 Features
+## ⭐ Project Highlights
 
-- Predict house prices in real-time
-- Interactive web interface using Streamlit
-- Machine Learning model using Random Forest
-- Model performance metrics (R² Score & MAE)
-- Feature importance visualization
-- User-friendly input system
+- 📊 Machine Learning model using Random Forest
+- 🌐 Deployed interactive web app using Streamlit
+- ⚡ Real-time house price prediction
+- 📈 Model performance: R² Score ~0.80, MAE ~0.33
+- 📌 Feature importance visualization
 
 ---
 
@@ -28,30 +25,22 @@ https://ravi27yadav-house-price-prediction-app-4fmsvhdzpyqfawfsst4gkh.streamlit.
 
 ---
 
-## 📊 Model Details
+## 📸 App Preview
 
-- Algorithm: Random Forest Regressor
-- Dataset: California Housing Dataset
-- R² Score: ~0.80+
-- Mean Absolute Error: ~0.30
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/74cf55ce-23b6-4fdb-9b01-7e8a30b68bbb" />
+
 
 ---
 
 ## 🖥️ How It Works
 
-1. User enters house details
-2. Model processes input data
-3. Prediction is generated instantly
-4. Results displayed on screen
+1. Enter house details  
+2. Model processes input  
+3. Instant price prediction  
 
 ---
 
-## 📸 Screenshots
-
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/c42c814b-4b7e-4f81-a0e9-7ec9817a2e9f" />
-
-
-## ⚙️ Installation (Run Locally)
+## ⚙️ Run Locally
 
 ```bash
 git clone https://github.com/ravi27yadav/ravi27yadav-house-price-prediction-app.git
