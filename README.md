@@ -48,9 +48,8 @@ https://ravi27yadav-house-price-prediction-app-4fmsvhdzpyqfawfsst4gkh.streamlit.
 
 ## 📸 Screenshots
 
-(Add screenshots of your app here)
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/c42c814b-4b7e-4f81-a0e9-7ec9817a2e9f" />
 
----
 
 ## ⚙️ Installation (Run Locally)
 
