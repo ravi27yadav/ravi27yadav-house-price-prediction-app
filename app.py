@@ -10,21 +10,56 @@ from sklearn.metrics import r2_score, mean_absolute_error
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
-st.set_page_config(page_title="House Price Prediction", page_icon="🏠")
+st.set_page_config(
+    page_title="AI House Price Predictor",
+    page_icon="🏠",
+    layout="wide"
+)
+
+# -----------------------------
+# CUSTOM CSS (🔥 PREMIUM UI)
+# -----------------------------
+st.markdown("""
+<style>
+body {
+    background-color: #0e1117;
+}
+.block-container {
+    padding-top: 2rem;
+}
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+.stButton>button {
+    background: linear-gradient(90deg,#00adb5,#00f2ff);
+    color: white;
+    border-radius: 12px;
+    height: 3.2em;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+}
+.stButton>button:hover {
+    transform: scale(1.02);
+}
+.metric-box {
+    padding: 20px;
+    border-radius: 12px;
+    background: #1c1f26;
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------------
 # TITLE
 # -----------------------------
-st.title("🏠 House Price Prediction App")
-
-st.markdown("""
-### 📊 Predict California Housing Prices using Machine Learning
-
-Enter house features below and get an instant prediction.
-""")
+st.title("🏠 AI-Powered House Price Predictor")
+st.write("Predict housing prices using advanced Machine Learning with real-time insights.")
 
 # -----------------------------
-# LOAD DATA (SAFE)
+# LOAD DATA
 # -----------------------------
 @st.cache_data
 def load_data():
@@ -34,7 +69,7 @@ def load_data():
 X, y = load_data()
 
 # -----------------------------
-# TRAIN MODEL (CACHED)
+# TRAIN MODEL
 # -----------------------------
 @st.cache_resource
 def train_model(X, y):
@@ -42,54 +77,101 @@ def train_model(X, y):
         X, y, test_size=0.2, random_state=42
     )
 
-    model = RandomForestRegressor()
+    model = RandomForestRegressor(n_estimators=100)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
 
-    r2 = r2_score(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-
-    return model, r2, mae
+    return model, r2_score(y_test, y_pred), mean_absolute_error(y_test, y_pred)
 
 model, r2, mae = train_model(X, y)
 
 # -----------------------------
-# MODEL PERFORMANCE
+# METRICS DASHBOARD
 # -----------------------------
 st.subheader("📊 Model Performance")
-st.write(f"R² Score: **{r2:.2f}**")
-st.write(f"Mean Absolute Error: **{mae:.2f}**")
+
+col1, col2 = st.columns(2)
+col1.metric("📈 R² Score", f"{r2:.2f}")
+col2.metric("📉 Mean Absolute Error", f"{mae:.2f}")
+
+st.divider()
 
 # -----------------------------
-# INPUT
+# INPUT UI (🔥 MODERN)
 # -----------------------------
-st.subheader("🏡 Enter House Details")
+st.subheader("🏡 Enter Property Details")
 
-MedInc = st.number_input("Median Income", 0.0, value=5.0)
-HouseAge = st.number_input("House Age", 0.0, value=20.0)
-AveRooms = st.number_input("Average Rooms", 0.0, value=6.0)
-AveBedrms = st.number_input("Average Bedrooms", 0.0, value=1.0)
-Population = st.number_input("Population", 0.0, value=1000.0)
-AveOccup = st.number_input("Average Occupancy", 0.0, value=3.0)
-Latitude = st.number_input("Latitude", value=34.0)
-Longitude = st.number_input("Longitude", value=-118.0)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    MedInc = st.slider("Median Income", 0.0, 15.0, 5.0)
+    HouseAge = st.slider("House Age", 0.0, 50.0, 20.0)
+
+with col2:
+    AveRooms = st.slider("Average Rooms", 0.0, 10.0, 6.0)
+    AveBedrms = st.slider("Average Bedrooms", 0.0, 5.0, 1.0)
+
+with col3:
+    Population = st.slider("Population", 0.0, 5000.0, 1000.0)
+    AveOccup = st.slider("Avg Occupancy", 0.0, 10.0, 3.0)
+
+Latitude = st.slider("Latitude", 32.0, 42.0, 34.0)
+Longitude = st.slider("Longitude", -125.0, -114.0, -118.0)
 
 # -----------------------------
 # PREDICTION
 # -----------------------------
-if st.button("🔍 Predict Price"):
+if st.button("🚀 Predict Price"):
+
     input_data = pd.DataFrame([[
         MedInc, HouseAge, AveRooms, AveBedrms,
         Population, AveOccup, Latitude, Longitude
     ]], columns=X.columns)
 
-    prediction = model.predict(input_data)
+    prediction = model.predict(input_data)[0] * 100000
 
-    st.success(f"💰 Predicted House Price: ${prediction[0]*100000:.2f}")
+    # Confidence approximation
+    preds = [tree.predict(input_data)[0] for tree in model.estimators_]
+    confidence = np.std(preds)
+
+    st.success(f"💰 Estimated Price: ${prediction:,.2f}")
+
+    # -----------------------------
+    # AI INSIGHTS (🔥 WOW FACTOR)
+    # -----------------------------
+    st.subheader("🤖 AI Insights")
+
+    if MedInc > 6:
+        st.write("✔ High income area → price increases significantly")
+    if HouseAge < 10:
+        st.write("✔ Newer property → higher value")
+    if Latitude > 36:
+        st.write("✔ Location in high-demand zone")
+
+    st.write(f"📊 Prediction Confidence (lower is better): {confidence:.4f}")
+
+# -----------------------------
+# FEATURE IMPORTANCE
+# -----------------------------
+st.subheader("📊 Feature Importance")
+
+importance_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": model.feature_importances_
+}).sort_values(by="Importance", ascending=True)
+
+st.bar_chart(importance_df.set_index("Feature"))
 
 # -----------------------------
 # FOOTER
 # -----------------------------
-st.markdown("---")
-st.markdown("🚀 Built by Ravi Yadav")
+st.divider()
+st.markdown("""
+### 🚀 About This App
+- Built using **Machine Learning (Random Forest)**
+- Uses real-world California housing dataset
+- Designed for **portfolio & recruiters**
+
+👨‍💻 Built by Ravi Yadav
+""")
