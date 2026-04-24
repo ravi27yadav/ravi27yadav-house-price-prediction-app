@@ -3,7 +3,7 @@
 A Machine Learning web app that predicts California housing prices based on user input features.
 
 🚀 **Live Demo:**  
-👉 https://ravi27yadav-house-price-prediction-app-4fmsvhdzpyqfawfsst4gkh.streamlit.app/
+👉 https://ravi27yadav-house-price-prediction-app-geppgykqvgv2yijod4ah4e.streamlit.app/
 
 ---
 
