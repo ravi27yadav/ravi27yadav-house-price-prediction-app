@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-streamlit
-pandas
-numpy
-=======
-streamlit
-pandas
->>>>>>> 46fbe8267bc069628438b0a0b48433515eb80329
-scikit-learn
+streamlit==1.32.0
+pandas==2.2.2
+scikit-learn==1.4.2
+numpy==1.26.4
