@@ -2,52 +2,27 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.datasets import fetch_california_housing
-from sklearn.metrics import r2_score, mean_absolute_error
-
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
 st.set_page_config(
-    page_title="AI House Price Predictor",
+    page_title="AI Real Estate India",
     page_icon="🏠",
     layout="wide"
 )
 
 # -----------------------------
-# CUSTOM CSS (🔥 PREMIUM UI)
+# STYLE
 # -----------------------------
 st.markdown("""
 <style>
-body {
-    background-color: #0e1117;
-}
-.block-container {
-    padding-top: 2rem;
-}
-h1 {
-    font-size: 3rem;
-    font-weight: 700;
-}
+body {background-color: #0e1117;}
 .stButton>button {
-    background: linear-gradient(90deg,#00adb5,#00f2ff);
+    background: linear-gradient(90deg,#ff7e5f,#feb47b);
     color: white;
-    border-radius: 12px;
-    height: 3.2em;
+    border-radius: 10px;
+    height: 3em;
     width: 100%;
-    font-size: 16px;
-    font-weight: 600;
-}
-.stButton>button:hover {
-    transform: scale(1.02);
-}
-.metric-box {
-    padding: 20px;
-    border-radius: 12px;
-    background: #1c1f26;
-    text-align: center;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -55,123 +30,114 @@ h1 {
 # -----------------------------
 # TITLE
 # -----------------------------
-st.title("🏠 AI-Powered House Price Predictor")
-st.write("Predict housing prices using advanced Machine Learning with real-time insights.")
+st.title("🇮🇳 AI Real Estate Advisor")
+st.write("Find, predict & analyze house prices across India with AI.")
 
 # -----------------------------
-# LOAD DATA
-# -----------------------------
-@st.cache_data
-def load_data():
-    data = fetch_california_housing(as_frame=True)
-    return data.data, data.target
-
-X, y = load_data()
-
-# -----------------------------
-# TRAIN MODEL
-# -----------------------------
-@st.cache_resource
-def train_model(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
-    model = RandomForestRegressor(n_estimators=100)
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-
-    return model, r2_score(y_test, y_pred), mean_absolute_error(y_test, y_pred)
-
-model, r2, mae = train_model(X, y)
-
-# -----------------------------
-# METRICS DASHBOARD
-# -----------------------------
-st.subheader("📊 Model Performance")
-
-col1, col2 = st.columns(2)
-col1.metric("📈 R² Score", f"{r2:.2f}")
-col2.metric("📉 Mean Absolute Error", f"{mae:.2f}")
-
-st.divider()
-
-# -----------------------------
-# INPUT UI (🔥 MODERN)
+# INPUT
 # -----------------------------
 st.subheader("🏡 Enter Property Details")
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    MedInc = st.slider("Median Income", 0.0, 15.0, 5.0)
-    HouseAge = st.slider("House Age", 0.0, 50.0, 20.0)
+    city = st.selectbox("City", ["Bangalore", "Mumbai", "Delhi", "Hyderabad"])
+    size = st.slider("House Size (sqft)", 500, 5000, 1200)
 
 with col2:
-    AveRooms = st.slider("Average Rooms", 0.0, 10.0, 6.0)
-    AveBedrms = st.slider("Average Bedrooms", 0.0, 5.0, 1.0)
+    bedrooms = st.slider("Bedrooms", 1, 5, 2)
+    age = st.slider("Property Age", 0, 30, 5)
 
 with col3:
-    Population = st.slider("Population", 0.0, 5000.0, 1000.0)
-    AveOccup = st.slider("Avg Occupancy", 0.0, 10.0, 3.0)
-
-Latitude = st.slider("Latitude", 32.0, 42.0, 34.0)
-Longitude = st.slider("Longitude", -125.0, -114.0, -118.0)
+    location_score = st.slider("Location Score", 1, 10, 7)
+    amenities = st.slider("Amenities Score", 1, 10, 6)
 
 # -----------------------------
-# PREDICTION
+# SIMPLE AI MODEL (SIMULATED)
+# -----------------------------
+base_price = {
+    "Bangalore": 6000,
+    "Mumbai": 15000,
+    "Delhi": 8000,
+    "Hyderabad": 5000
+}
+
+price = (
+    size * base_price[city]
+    + bedrooms * 200000
+    - age * 50000
+    + location_score * 100000
+    + amenities * 80000
+)
+
+# -----------------------------
+# PREDICT BUTTON
 # -----------------------------
 if st.button("🚀 Predict Price"):
-
-    input_data = pd.DataFrame([[
-        MedInc, HouseAge, AveRooms, AveBedrms,
-        Population, AveOccup, Latitude, Longitude
-    ]], columns=X.columns)
-
-    prediction = model.predict(input_data)[0] * 100000
-
-    # Confidence approximation
-    preds = [tree.predict(input_data)[0] for tree in model.estimators_]
-    confidence = np.std(preds)
-
-    st.success(f"💰 Estimated Price: ${prediction:,.2f}")
+    st.success(f"💰 Estimated Price: ₹{price:,.0f}")
 
     # -----------------------------
-    # AI INSIGHTS (🔥 WOW FACTOR)
+    # AI INSIGHTS
     # -----------------------------
     st.subheader("🤖 AI Insights")
 
-    if MedInc > 6:
-        st.write("✔ High income area → price increases significantly")
-    if HouseAge < 10:
-        st.write("✔ Newer property → higher value")
-    if Latitude > 36:
-        st.write("✔ Location in high-demand zone")
+    if location_score > 8:
+        st.write("✔ Prime location → high investment potential")
 
-    st.write(f"📊 Prediction Confidence (lower is better): {confidence:.4f}")
+    if age < 5:
+        st.write("✔ New property → higher resale value")
+
+    if city == "Mumbai":
+        st.write("⚠ Mumbai market is premium → prices inflated")
+
+    # -----------------------------
+    # INVESTMENT ADVICE
+    # -----------------------------
+    st.subheader("📊 Investment Suggestion")
+
+    if price < 8000000:
+        st.success("💡 Good investment opportunity")
+    else:
+        st.warning("⚠ Slightly overpriced compared to market")
 
 # -----------------------------
-# FEATURE IMPORTANCE
+# PROPERTY LISTINGS (🔥 REAL APP FEEL)
 # -----------------------------
-st.subheader("📊 Feature Importance")
+st.subheader("🏘️ Similar Properties")
 
-importance_df = pd.DataFrame({
-    "Feature": X.columns,
-    "Importance": model.feature_importances_
-}).sort_values(by="Importance", ascending=True)
+properties = [
+    {"name": "2BHK in Bangalore", "price": "₹75 Lakhs", "contact": "Rahul - 9876543210"},
+    {"name": "3BHK in Mumbai", "price": "₹2.1 Cr", "contact": "Amit - 9123456780"},
+    {"name": "2BHK in Delhi", "price": "₹90 Lakhs", "contact": "Neha - 9988776655"},
+]
 
-st.bar_chart(importance_df.set_index("Feature"))
+cols = st.columns(3)
+
+for i, prop in enumerate(properties):
+    with cols[i]:
+        st.markdown(f"""
+        ### {prop['name']}
+        💰 {prop['price']}  
+        📞 {prop['contact']}
+        """)
+
+# -----------------------------
+# AI CHAT ASSISTANT (🔥 WOW FEATURE)
+# -----------------------------
+st.subheader("💬 AI Assistant")
+
+user_query = st.text_input("Ask anything about property...")
+
+if user_query:
+    if "investment" in user_query.lower():
+        st.write("AI: Bangalore & Hyderabad are best for growth 📈")
+    elif "cheap" in user_query.lower():
+        st.write("AI: Try outskirts areas for lower prices 💰")
+    else:
+        st.write("AI: This property looks good based on current trends 👍")
 
 # -----------------------------
 # FOOTER
 # -----------------------------
-st.divider()
-st.markdown("""
-### 🚀 About This App
-- Built using **Machine Learning (Random Forest)**
-- Uses real-world California housing dataset
-- Designed for **portfolio & recruiters**
-
-👨‍💻 Built by Ravi Yadav
-""")
+st.markdown("---")
+st.markdown("🚀 Built by Ravi Yadav | AI Real Estate App")
