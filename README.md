@@ -30,7 +30,8 @@ A Machine Learning web app that predicts California housing prices based on user
 
 ## 📸 App Preview
 
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/b487c58a-52cd-4091-bdc5-3ed1233b7508" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/8637e414-1678-47f2-b673-5e7d34678245" />
+
 
 
 📌 Interactive ML-powered web application with real-time predictions
