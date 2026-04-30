@@ -21,13 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
         userInput.focus();
     }, 1000);
 
-    function addBotMessage(text, isHTML = false) {
+    function addBotMessage(text, isHTML = false, onComplete = null) {
         const msgDiv = document.createElement('div');
         msgDiv.className = 'message bot-msg';
         
         if (isHTML) {
             msgDiv.innerHTML = text;
-            // Attach event listener if button exists
             setTimeout(() => {
                 const btn = msgDiv.querySelector('.agent-action-btn');
                 if (btn) {
@@ -40,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         chatContainer.appendChild(msgDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        if(onComplete) setTimeout(onComplete, 50);
     }
 
     function addUserMessage(text) {
@@ -75,42 +76,112 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showTyping();
 
-        setTimeout(() => {
-            removeTyping();
-            processInput(text);
-        }, 1500 + Math.random() * 1000); // Simulate network delay
+        if (currentStep === 0) {
+            setTimeout(() => {
+                removeTyping();
+                simulateAnalysis(text);
+            }, 1000);
+        } else {
+            setTimeout(() => {
+                removeTyping();
+                addBotMessage("Please click the button above to secure your property, or refresh the page to start a new search.");
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+            }, 1000);
+        }
     }
 
-    function processInput(text) {
-        if (currentStep === 0) {
-            // Predict Price
-            const basePrice = Math.floor(Math.random() * 500000) + 200000;
-            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(basePrice);
-            const deposit = basePrice * 0.01; // 1% deposit
-            const formattedDeposit = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(deposit);
+    function simulateAnalysis(text) {
+        const progressHtml = `
+            <div>Running predictive ML models...</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="ml-progress"></div>
+            </div>
+        `;
+        addBotMessage(progressHtml, true);
+        
+        setTimeout(() => {
+            const bar = document.getElementById('ml-progress');
+            if(bar) bar.style.width = '100%';
             
-            houseDetails.type = text;
-            houseDetails.value = formattedPrice;
-            houseDetails.deposit = formattedDeposit;
+            setTimeout(() => {
+                processPrediction(text);
+            }, 800);
+        }, 100);
+    }
 
-            addBotMessage(`Based on my ML models, the estimated current market value for a "${text}" is around <strong>${formattedPrice}</strong>.`, true);
+    function processPrediction(text) {
+        const basePrice = Math.floor(Math.random() * 500000) + 200000;
+        const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(basePrice);
+        const deposit = basePrice * 0.01; // 1% deposit
+        const formattedDeposit = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(deposit);
+        
+        houseDetails.type = text;
+        houseDetails.value = formattedPrice;
+        houseDetails.deposit = formattedDeposit;
+
+        // Generate Chart Data
+        const chartId = 'chart-' + Date.now();
+        const chartHtml = `
+            Based on my ML models, the estimated current market value for a "${text}" is around <strong style="color:var(--neon-blue); font-size: 1.1rem;">${formattedPrice}</strong>.<br><br>
+            Here is the 5-year projected ROI forecast:<br>
+            <div class="chart-wrapper">
+                <canvas id="${chartId}"></canvas>
+            </div>
+        `;
+
+        addBotMessage(chartHtml, true, () => {
+            renderChart(chartId, basePrice);
             
             setTimeout(() => {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage(`I have located an off-market property matching your criteria. I can secure this property for you right now with a 1% booking deposit of ${formattedDeposit}.<br><button class="agent-action-btn"><i class="fa-solid fa-lock"></i> Secure via Locus Checkout</button>`, true);
+                    addBotMessage(`I have located an off-market property matching your criteria with high ROI potential. I can secure this property for you right now with a 1% booking deposit of ${formattedDeposit}.<br><button class="agent-action-btn"><i class="fa-solid fa-lock"></i> Secure via Locus Checkout</button>`, true);
                     userInput.disabled = false;
                     sendBtn.disabled = false;
+                    currentStep = 1;
                 }, 2000);
-            }, 1000);
-            
-            currentStep = 1;
-        } else {
-            addBotMessage("Please click the button above to secure your property, or refresh the page to start a new search.");
-            userInput.disabled = false;
-            sendBtn.disabled = false;
+            }, 1500);
+        });
+    }
+
+    function renderChart(canvasId, basePrice) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        
+        // Generate trend data
+        const data = [basePrice];
+        for(let i=1; i<=5; i++) {
+            data.push(data[i-1] * (1 + (Math.random() * 0.08 + 0.02))); // 2-10% growth
         }
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029'],
+                datasets: [{
+                    label: 'Predicted Value ($)',
+                    data: data,
+                    borderColor: '#00f2fe',
+                    backgroundColor: 'rgba(0, 242, 254, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#4facfe'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { ticks: { color: '#a0a5b5' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { ticks: { color: '#a0a5b5' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                }
+            }
+        });
     }
 
     function openCheckout() {
