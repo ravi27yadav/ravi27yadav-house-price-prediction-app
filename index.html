@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locus Paygentic AI Real Estate Agent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-robot"></i>
+                <h1>Locus<span>Estate</span>.ai</h1>
+            </div>
+            <div class="status-badge">
+                <span class="pulse"></span> Agent Online
+            </div>
+        </header>
+
+        <main>
+            <div class="glass-panel main-panel">
+                <div class="chat-header">
+                    <h2><i class="fa-solid fa-sparkles"></i> Locus Paygentic Autonomous Realtor</h2>
+                    <p>I predict prices and secure properties via Locus Checkout.</p>
+                </div>
+
+                <div class="chat-container" id="chat-container">
+                    <!-- Chat messages will be injected here -->
+                </div>
+
+                <div class="input-area" id="input-area">
+                    <input type="text" id="user-input" placeholder="E.g. 3 BHK in Downtown..." autocomplete="off" disabled>
+                    <button id="send-btn" disabled><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Locus Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="locus-checkout glass-panel">
+            <div class="checkout-header">
+                <h3><i class="fa-solid fa-wallet"></i> CheckoutWithLocus</h3>
+                <button class="close-btn" id="close-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="checkout-body">
+                <div class="property-summary">
+                    <h4>Securing Property: <span id="prop-type">Premium Villa</span></h4>
+                    <p>Total Value: <span id="prop-value">$450,000</span></p>
+                    <div class="deposit-box">
+                        <p>Required Booking Deposit (1%)</p>
+                        <h2 id="deposit-amount">$4,500</h2>
+                    </div>
+                </div>
+                <div class="payment-methods">
+                    <button class="pay-btn locus-pay"><i class="fa-solid fa-bolt"></i> Pay with Locus Wallet</button>
+                    <button class="pay-btn crypto-pay"><i class="fa-brands fa-bitcoin"></i> Pay via Crypto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
